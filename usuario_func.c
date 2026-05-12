@@ -23,7 +23,8 @@ void cadastro(){
 		scanf("%s", &comsenha);
 		if(strcmp(senha,comsenha)==0){
 			saiu = 1;
-			fprintf(arquivo, "%s %s %s\n", nome,email,senha);
+			/*esse 0 mostra indica a quantidade de listas de favoritos*/
+			fprintf(arquivo, "%s %s %s 0\n", nome,email,senha);
 		}
 		else{
 			printf("as senhas nao correspondem\n");
@@ -79,7 +80,8 @@ int entrar(int* ponto){
 		if(strcmp(lista_usuario[i][1], dados[0]) == 0 && strcmp(lista_usuario[i][2], dados[1]) == 0){
 			entrou = 1;
 			*ponto = i;
-			printf("Seja bem vindo %s\n", lista_usuario[i][0]);
+			system("cls");
+			printf("Seja bem vindo %s\n\n\n", lista_usuario[i][0]);
 			system("pause");
 			return 1;
 		}
@@ -111,4 +113,3 @@ int escolher(){
    	}
     
 }
-
