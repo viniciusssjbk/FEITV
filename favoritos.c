@@ -1,10 +1,14 @@
+/*BIBLIOTECAS*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
 
+/*FUN??O PARA PEGAR O NOME DA LISTA DO USUARIO*/
   void pegar_nome_lista(int indice_usuario, int indice_atual){
  	FILE* arquivo;
+ 	/*PEGANDO O NOME DO USUARIO*/
  	arquivo = fopen("arquivos/usuario.txt", "r");
 	int total_usuarios = 0;
 	char linha[200];
@@ -14,14 +18,14 @@
 	fclose(arquivo);
 	arquivo = fopen("arquivos/usuario.txt", "r");
 	const int total_users = total_usuarios;
-	char lista_usuario[total_users][1][100];
+	char lista_usuario[total_users][4][100];
 	int indice = 0;
 	while(!feof(arquivo)){
-		fscanf(arquivo, "%s", lista_usuario[indice][0]);
+		fscanf(arquivo, "%s %s %s %s", lista_usuario[indice][0],lista_usuario[indice][1],lista_usuario[indice][2],lista_usuario[indice][3]);
 		indice = indice + 1;
 	}
 	fclose(arquivo);
-
+	/*PEGANDO O ARQUIVO DESEJADO DO USUARIO*/
 	char escolhendo_arq[200];
 	char numero_arq[10];
 	char nome_arquivo[100];
@@ -30,13 +34,14 @@
  	arquivo = fopen(escolhendo_arq, "r");
  	fscanf(arquivo,"%s", nome_arquivo);
  	fclose(arquivo);
+ 	/*PRINTANDO O NOME DA LISTA DO USUARIO*/
  	printf("%s\n",nome_arquivo);
  }
 
 
 
 
-
+/*FU??O DE FAVORITOS DO USUARIO*/
  int verifica_favoritos_quant(int indice_usuario){
 
 
@@ -53,7 +58,7 @@
 	fclose(arquivo);
 	arquivo = fopen("arquivos/usuario.txt", "r");
 	const int total_users = total_usuarios;
-	/*Essa é a unica lista de usuario que pega todos os valores pois nessa parte pega o ultimo conteudo da lista que é referente a o numeros de favoritos que o usuario possui */
+	/*Essa ? a unica lista de usuario que pega todos os valores pois nessa parte pega o ultimo conteudo da lista que ? referente a o numeros de favoritos que o usuario possui */
 	char lista_usuario[total_users][4][100];
 	int indice = 0;
 	while(!feof(arquivo)){
@@ -80,7 +85,7 @@
 	}
 	printf("-------------------------------\n");
 	printf("o que deseja fazer?\n");
-
+	/*VERIFICA SE O USUARIO CHEGOU NO LIMITE DE CRIA??O DE LISTAS*/
 	if(quant_lista_fav==5){
 			printf("____________________________________________________\n");
 			printf("..  Nao e possivel adicionar mais uma lista  ..\n");
@@ -105,7 +110,7 @@
 					return 4;
 				}
 				else{
-					printf("Selecione uma opção correta");
+					printf("Selecione uma op??o correta");
 				}
 			}
 	}
@@ -135,7 +140,7 @@
 					return 4;
 				}
 				else{
-					printf("Selecione uma opção correta");
+					printf("Selecione uma op??o correta");
 				}
 			}
 	}
@@ -146,7 +151,7 @@
 
 
 
-
+/*CRIA??O DE LISTA DE FAVORITOS*/
  void criar_favoritos(int indice_usuario){
  	system("cls");
  	//primeiro usuario digita o nome para sua lista
@@ -167,7 +172,7 @@
 	fclose(arquivo);
 	arquivo = fopen("arquivos/usuario.txt", "r");
 	const int total_users = total_usuarios;
-	/*Essa é a unica lista de usuario que pega todos os valores pois nessa parte pega o ultimo conteudo da lista que é referente a o numeros de favoritos que o usuario possui */
+	/*Essa ? a unica lista de usuario que pega todos os valores pois nessa parte pega o ultimo conteudo da lista que ? referente a o numeros de favoritos que o usuario possui */
 	char lista_usuario[total_users][4][100];
 	int indice = 0;
 	while(!feof(arquivo)){
@@ -189,7 +194,7 @@
 			fprintf(arquivo, "%s %s %s %s\n", lista_usuario[k][0],lista_usuario[k][1],lista_usuario[k][2],lista_usuario[k][3]);
 		}
 		else{
-			fprintf(arquivo, "%s %s %s %s",  lista_usuario[k][0],lista_usuario[k][1],lista_usuario[k][2],lista_usuario[k][3]);
+			fprintf(arquivo, "%s %s %s %s\n",  lista_usuario[k][0],lista_usuario[k][1],lista_usuario[k][2],lista_usuario[k][3]);
 		}
 
 	}
@@ -230,7 +235,7 @@ void remover_lista(int indice_usuario){
 	fclose(arquivo);
 	arquivo = fopen("arquivos/usuario.txt", "r");
 	const int total_users = total_usuarios;
-	/*Essa é a unica lista de usuario que pega todos os valores pois nessa parte pega o ultimo conteudo da lista que é referente a o numeros de favoritos que o usuario possui */
+	/*Essa ? a unica lista de usuario que pega todos os valores pois nessa parte pega o ultimo conteudo da lista que ? referente a o numeros de favoritos que o usuario possui */
 	char lista_usuario[total_users][4][100];
 	int indice = 0;
 	while(!feof(arquivo)){
@@ -265,6 +270,7 @@ void remover_lista(int indice_usuario){
 	sprintf(arquivo_fav_user,"arquivos/favoritos/%s_lista_%d.txt",lista_usuario[indice_usuario][0],selecao_fav);
 	remove(arquivo_fav_user);
 	int l;
+	/*a lista ? removida e a posterior a ela, toma a posi??o dela. exemplo: removido a lista 3, a 4 se torna a 3 e a 5 se torna a 4*/
 	for(l=selecao_fav;l<quant_fav;l++){
 		sprintf(arquivo_fav_user,"arquivos/favoritos/%s_lista_%d.txt",lista_usuario[indice_usuario][0],l+1);
 		sprintf(arquivo_fav_user_novo,"arquivos/favoritos/%s_lista_%d.txt",lista_usuario[indice_usuario][0],l);
@@ -279,11 +285,12 @@ void remover_lista(int indice_usuario){
 	arquivo = fopen("arquivos/usuario.txt", "w");
 	int k =0;
 	for(k=0;k<total_users;k++){
+		/*atualiza o valor da quantidade de listas do usuario*/
 		if(k==indice_usuario){
 			fprintf(arquivo, "%s %s %s %s\n",lista_usuario[k][0],lista_usuario[k][1],lista_usuario[k][2],lista_usuario[k][3]);
 		}
 		else{
-			fprintf(arquivo, "%s %s %s %s",lista_usuario[k][0],lista_usuario[k][1],lista_usuario[k][2],lista_usuario[k][3]);
+			fprintf(arquivo, "%s %s %s %s\n",lista_usuario[k][0],lista_usuario[k][1],lista_usuario[k][2],lista_usuario[k][3]);
 		}
 
 	}
@@ -292,7 +299,7 @@ void remover_lista(int indice_usuario){
 }
 
 
-
+/*TELA DE EDI??O DAS LISTAS*/
 int tela_favoritos(int indice_usuario, int selecao){
 	system("cls");
 	FILE *arquivo;
@@ -310,7 +317,7 @@ int tela_favoritos(int indice_usuario, int selecao){
 	char lista_usuario[total_users][1][100];
 	int indice = 0;
 	while(!feof(arquivo)){
-		fscanf(arquivo, "%s", lista_usuario[indice][0]);
+		fscanf(arquivo, "%s %s %s %s", lista_usuario[indice][0],lista_usuario[indice][1],lista_usuario[indice][2],lista_usuario[indice][3]);
 		indice = indice + 1;
 	}
 	fclose(arquivo);
@@ -321,7 +328,7 @@ int tela_favoritos(int indice_usuario, int selecao){
 	arquivo = fopen(arquivo_favorito, "r");
 	if(arquivo==NULL){
 
-		printf("Você ainda não possui nenhum filme nos favoritos\n");
+		printf("Voce ainda nao possui nenhum lista nos favoritos\n");
 		system("pause");
 		return 0;
 
@@ -333,10 +340,19 @@ int tela_favoritos(int indice_usuario, int selecao){
 		}
 		fclose(arquivo);
 		if(total_filmes==1){
-			printf("Você ainda não possui nenhum filme nos favoritos\n");
+			/*verifica se o usuario tem filme na sua lista de favoritos*/
+			printf("Voce ainda nao possui nenhum filme nos favoritos\n");
 			system("pause");
-			return 0;
-
+			char x[3];
+			printf("Deseja colocar um filme na lista?'sim' ou 'nao'\n");
+			scanf("%s",&x);
+			if(strcmp(x,"sim")==0){
+				selecao= selecao+10;
+				return selecao;
+			}
+			else{
+				return 0;
+			}
 		}
 		else{
 
@@ -355,6 +371,7 @@ int tela_favoritos(int indice_usuario, int selecao){
 				}
 				int i =0;
 				int id =0;
+				/*painel dos filmes*/
 				printf("____________________________________________\n");
 				printf("|   ID  |          FILME                   |\n");
 				for(i=1;i<total;i++){
@@ -370,7 +387,7 @@ int tela_favoritos(int indice_usuario, int selecao){
 
 
 }
-
+/*SELECIONANDO UMA LISTA PARA EDITAR*/
 int editar_lista(int indice_usuario){
 	system("cls");
 	/*PEGANDO O NOME DO USUARIO*/
@@ -419,3 +436,4 @@ int editar_lista(int indice_usuario){
 
 
 }
+

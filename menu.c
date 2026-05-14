@@ -23,18 +23,21 @@ void logo_menu(){
 
 
 
-/*FAVORITAR*/
-void favoritos(int indice_filme_favoritar, int total, int indice_usuario, int selecao=-1){
+/*FUNCAO FAVORITAR FILME DA LISTA*/
+void favoritos(int indice_filme_favoritar, int total, int indice_usuario, int selecao){
 	FILE* arquivo;
+	/*listas dos filmes*/
+	/*? NECESSARIO TER ESSA LISTA PARA FUNCIONAMENTO DO CODIGO*/
 	arquivo = fopen("arquivos/filmes.txt", "r");
 	char lista_filmes[total][100];
 	int indice_filme = 0;
+	/*pega todos os filmes e coloca eles dentro da variavel 'lista_filmes'*/
 	while (fgets(lista_filmes[indice_filme], 100, arquivo) != NULL) {
 	    indice_filme++;
 	}
 	fclose(arquivo);
 	
-	
+	/*pegando todos os usarios da lista*/
 	arquivo = fopen("arquivos/usuario.txt", "r");
 	int total_usuarios = 0;
 	char linha[200];
@@ -46,12 +49,14 @@ void favoritos(int indice_filme_favoritar, int total, int indice_usuario, int se
 	const int total_users = total_usuarios;
 	char lista_usuario[total_users][4][100];
 	int indice = 0;
+	/*pegando todas as informa??es nome/email/senha/quantidade_favoritos */
 	while(!feof(arquivo)){ 
 		fscanf(arquivo, "%s %s %s %s", lista_usuario[indice][0],lista_usuario[indice][1],lista_usuario[indice][2],lista_usuario[indice][3]); 
 		indice = indice + 1; 
 	}
 	fclose(arquivo);
 	system("cls");
+	/*pegando apenas a quantidade de favoritos do usuario logado*/
 	int quant_fav = atoi(lista_usuario[indice_usuario][3]);
 	if(quant_fav==0){
 		printf("voce nao possui nenhuma lista.");
@@ -63,15 +68,19 @@ void favoritos(int indice_filme_favoritar, int total, int indice_usuario, int se
 			int indice_atual =0;
 			
 			int selecao_fav;
-			for(indice_atual=1;indice_atual<=quant_fav;indice_atual++){
+			/*verifica se a selecao da lista ja foi feita antes no codigo caso nao o usuario ter? que falar qual lista ele quer colocar o filme*/
+			if(selecao==0){
+			
+				for(indice_atual=1;indice_atual<=quant_fav;indice_atual++){
 				
-				printf("%d -",indice_atual);
-				pegar_nome_lista(indice_usuario,indice_atual);
+					printf("%d -",indice_atual);
+					pegar_nome_lista(indice_usuario,indice_atual);
 				
+				}
 			}
 			int brecagem=1;
 			while(brecagem>0){
-				if(selecao==-1){
+				if(selecao==0){
 				
 				printf("Digite o numero da lista que deixara salvo o filme:\n");
 				scanf("%d",&selecao_fav);
@@ -79,23 +88,27 @@ void favoritos(int indice_filme_favoritar, int total, int indice_usuario, int se
 				else{
 					selecao_fav = selecao;
 				}
+				/*verifica se o ID escrito ? valido*/
 				if(selecao_fav>0 && selecao_fav<=quant_fav){
 					brecagem=0;
 				}
 			}
 			char arquivo_favorito[200];
+			/*ele vai atualizar a lista desejada*/
 			sprintf(arquivo_favorito, "arquivos/favoritos/%s_lista_%d.txt", lista_usuario[indice_usuario][0],selecao_fav);
 			arquivo = fopen(arquivo_favorito,"a+");
 		
 			char lista_favoritos[total][100];
 			int indice_favoritos = 0;
 			int possui =0;
+			/*verifica se dentro da lista j? possui esse filme para nao ter duplicadas*/
 			while (fgets(lista_favoritos[indice_favoritos], 100, arquivo) != NULL) {
 			    if(strcmp(lista_favoritos[indice_favoritos],lista_filmes[indice_filme_favoritar])==0){
 			    	possui=1;
 				}
 				indice_favoritos++;
 			}
+			/*se nao possui ele coloca o filme*/
 			if(!possui){
 				fprintf(arquivo, "%s", lista_filmes[indice_filme_favoritar]);
 			}
@@ -105,7 +118,7 @@ void favoritos(int indice_filme_favoritar, int total, int indice_usuario, int se
 	}
 }
 
-/*EXCLUIR*/
+/*FUNCAO EXCLUIR FILME DA LISTA*/
 void excluir(int indice_usuario, int selecao){
 	int selecao_id;
 	FILE *arquivo;
@@ -131,6 +144,7 @@ void excluir(int indice_usuario, int selecao){
 	/*PEGANDO O ARQUIVO DE FAVORITOS DO USUARIO*/
 	char arquivo_favorito[100];
 	sprintf(arquivo_favorito, "arquivos/favoritos/%s_lista_%d.txt", lista_usuario[indice_usuario][0],selecao);
+	/*PRIMEIRO PEGANDO A QUANTIDADE TOTAL DE FILMES ARMAZENADAS*/
 	arquivo = fopen(arquivo_favorito, "r");
 	int total_filmes = 0;
 	char linha_filmes[200];
@@ -138,6 +152,7 @@ void excluir(int indice_usuario, int selecao){
 		total_filmes++;
 	}
 	fclose(arquivo);
+	/*PEGANDO TODOS OS FILMES*/
 	arquivo = fopen(arquivo_favorito, "r");
 	const int total = total_filmes;
 	char lista_filmes[total][100];
@@ -145,7 +160,8 @@ void excluir(int indice_usuario, int selecao){
 	while (fgets(lista_filmes[indice_filme], 100, arquivo) != NULL) {
     	indice_filme++;
 	}
-	fclose(arquivo);		
+	fclose(arquivo);
+	/*REMOVENDO O /n PARA N?O ATRAPALHAR DEPOIS NA VISUALIZA??O*/		
 	int remover_n =0;
 	for(remover_n=0;remover_n<total;remover_n++){
 	
@@ -154,6 +170,7 @@ void excluir(int indice_usuario, int selecao){
 	int excluir;
 	excluir=0;
 	while(!excluir){
+		/*AQUI O USUARIO DIGITA O ID DO FILME QUE SER? EXCLUIDO*/
 		printf("Digite o ID do filme que sera excluido:\n");
 		scanf("%d",&selecao_id);
 		if(selecao_id>0 && selecao_id<=total){
@@ -171,7 +188,7 @@ void excluir(int indice_usuario, int selecao){
 		strcpy(lista_filmes[indice_comeco],lista_filmes[seguinte]);
 		
 	}
-	
+	/*ATUALIZANDO O ARQUIVO COMPLETO*/
 	arquivo = fopen(arquivo_favorito, "w");
 	for(indice_comeco=0;indice_comeco<total-1;indice_comeco++){
 		fprintf(arquivo,"%s\n",lista_filmes[indice_comeco]);
@@ -186,11 +203,16 @@ void excluir(int indice_usuario, int selecao){
 
 
 
-/*CURTIR*/
+/*FUNCAO CURTIR OU DESCURTIR O FILME*/
 void curtir(int indice_curtida_filme,int total,int curtir_dcurtir){
-	
+	/*PEGANDO O ARQUIVO DE CURTIDAS*/
 	FILE *arquivo;
 	arquivo = fopen("arquivos/curtidas_filme.txt", "r");
+	/*para funcionamento do codigo ? necessario ter esse arquivo criado*/
+	if(arquivo==NULL){
+		printf("n?o ? possivel abrir esse documento");
+		return;
+	}
 	char curtidas_filmes[total][100];
 	int indice_filme = 0;
 
@@ -199,14 +221,22 @@ void curtir(int indice_curtida_filme,int total,int curtir_dcurtir){
 	}
 	fclose(arquivo);
 	int curtida;
-	/*AUMENTANDO OU DIMINUINDO O NUMERO DE CURTIDAS*/
+	/*AUMENTANDO OU DIMINUINDO O NUMERO DE CURTIDAS E VERIFICANDO SE CHEGOU NO LIMITE MINIMO E MAXIMO*/
 	if(curtir_dcurtir==1){
 		
 	 	curtida= (atoi(curtidas_filmes[indice_curtida_filme]) - 1);
+	 	if(curtida<0){
+			 printf("N?o ? possivel descurtir esse filme");
+			 curtida = curtida+1;
+		 }
 	}
 	else{
-	
+		
 		curtida = (atoi(curtidas_filmes[indice_curtida_filme]) + 1);
+		if(curtida>900){
+			 printf("N?o ? possivel curtir esse filme");
+			 curtida = curtida-1;
+		 }
 	}
 	
 	sprintf(curtidas_filmes[indice_curtida_filme], "%d", curtida);
@@ -250,7 +280,7 @@ void painel_filmes(){
 	    indice_filme++;
 	}
 	fclose(arquivo);
-	/*COLOCANDO AS INFORMAÇÔES DOS FILMES EM ORDEM*/
+	/*COLOCANDO AS INFORMA??ES DOS FILMES EM ORDEM*/
 	arquivo = fopen("arquivos/info_filme.txt", "r");
 	char info_filmes[total][900];
 	indice_filme = 0;
@@ -287,7 +317,7 @@ void painel_filmes(){
 }
 
 /*BUSCAR*/
-void buscar(int indice_usuario,int selecao=-1){
+void buscar(int indice_usuario,int selecao){
 	system("cls");
 	FILE *arquivo;
 	arquivo = fopen("arquivos/filmes.txt", "r");
@@ -304,13 +334,12 @@ void buscar(int indice_usuario,int selecao=-1){
 	char lista_filmes[total][100];
 	int indice_filme = 0;
 
-	/*COLOCANDO OS DADOS NA MATRIZ */
 	/* LENDO LINHA COMPLETA */
 	while (fgets(lista_filmes[indice_filme], 100, arquivo) != NULL) {
 	    indice_filme++;
 	}
 	fclose(arquivo);
-	/*COLOCANDO AS INFORMAÇÔES DOS FILMES EM ORDEM*/
+	/*COLOCANDO AS INFORMA??ES DOS FILMES EM ORDEM*/
 	arquivo = fopen("arquivos/info_filme.txt", "r");
 	char info_filmes[total][900];
 	indice_filme = 0;
@@ -329,6 +358,7 @@ void buscar(int indice_usuario,int selecao=-1){
 	}
 	fclose(arquivo);
 	int remover_n =0;
+	/*REMOVENDO OS \n */
 	for(remover_n=0;remover_n<total;remover_n++){
 	lista_filmes[remover_n][strcspn(lista_filmes[remover_n], "\n")] = '\0';
 	info_filmes[remover_n][strcspn(info_filmes[remover_n], "\n")] = '\0';
@@ -344,6 +374,7 @@ void buscar(int indice_usuario,int selecao=-1){
 	while(!buscando_verifica){
 		painel_filmes();
 		verifica_filme=0;
+		/*USUARIO S? IRA SAIR DO LOOP SE DIGITAR '0' */
 		printf("Digite o id do filme:(para sair digite 0)\n");
 		scanf("%d",&buscando);
 		if(buscando==0){
@@ -362,19 +393,26 @@ void buscar(int indice_usuario,int selecao=-1){
 				printf("3. Curtir o filme\n");
 				printf("4. Descurtir o filme\n");
 				printf("/-/-/-/-/-/-/-/-/-/-/-/\n");
+				if(selecao==0){
 				scanf("%s",escolhendo_filmes);
+				}
+				else{
+					strcpy(escolhendo_filmes, "2");
+				}
 				if(strcmp(escolhendo_filmes,"1")==0){
 					verifica_filme=1;
 					system("cls");
 				}
 				if(strcmp(escolhendo_filmes,"2")==0){
-					if(selecao==-1){
+					/*VERIFICA SE O USUARIO JA TINHA SELECIONADO UMA LISTA ANTES*/
+					if(selecao==0){
 					
-						favoritos(buscando-1,total,indice_usuario);
+						favoritos(buscando-1,total,indice_usuario,0);
 	
 					}
 					else{
 						favoritos(buscando-1,total,indice_usuario,selecao);	
+						verifica_filme=1;
 					}
 					
 					verifica_filme=1;
@@ -402,8 +440,9 @@ void buscar(int indice_usuario,int selecao=-1){
 	}
 }
 
-/*MENU*/
+/*FUNCAO DO MENU*/
 void menu(int indice){
+	/*MENU PRINCIPAL*/
 	system("cls");
 	system("color 06");
 	char escolha[100];
@@ -417,19 +456,22 @@ void menu(int indice){
 		printf("\n");
 		scanf("%s",escolha);
 		if(strcmp(escolha,"1") == 0){
-			buscar(indice);
+			/*CHAMANDO A FUN??O BUSCAR FILME*/
+			buscar(indice,0);
 		}
 		if(strcmp(escolha,"2") ==0){
 			voltar_menu=0;
 			
 			
-			
+			/*MENU DO GERENCIAMENTOS DOS FAVORITOS*/
 			while(!voltar_menu){
 				system("cls");
 				verifica = verifica_favoritos_quant(indice);
+				/*VERIFICA SE O USUARIO TEM UMA LISTA E SE QUER CRIAR UMA LISTA */
 				if(verifica==0){
 					system("cls");
 					char x[3];
+					
 					printf("voce ainda nao possui uma lista\n");
 					printf("deseja criar: 'sim' ou 'nao' \n");
 					scanf("%s",&x);
@@ -438,7 +480,7 @@ void menu(int indice){
 						voltar_menu =1;
 					}
 					else{
-						printf("Digite uma opção valida\n");	
+						printf("Digite uma op??o valida\n");	
 					}	
 				}
 				if(verifica==1){
@@ -449,9 +491,15 @@ void menu(int indice){
 					remover_lista(indice);
 				}
 				if(verifica==3){
+					/*ENTRANDO NA TELA DE EDI??O DE UMA LISTA*/
 					int tela_selecao;
 					tela_selecao = editar_lista(indice);
-					if(tela_selecao>0){
+					if(tela_selecao>10){
+						tela_selecao= tela_selecao-10;
+						buscar(indice,tela_selecao);
+						tela_selecao=0;
+					}
+					if(tela_selecao>0 && tela_selecao<=4){
 							printf("/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/\n");
 							printf("1. Adicionar um filme na lista de favoritos\n");
 							printf("2. Tirar um filme da lista de favoritos\n");
@@ -483,3 +531,4 @@ void menu(int indice){
 	}
 	
 }
+
